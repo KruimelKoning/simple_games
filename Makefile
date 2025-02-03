@@ -22,7 +22,7 @@ $(OBJ_DIR)/%.o: %.cpp
 
 $(NAME) :	$(OBJ)
 	@echo "$(BLUE)Building $(NAME)...$(RESET)"
-	c++ $(CPPFLAGS) $(OBJ) -lSDL2 -o $(NAME)
+	c++ $(CPPFLAGS) $(OBJ) -lSDL2 -lSDL2_image -o $(NAME)
 	@echo "$(GREEN)$(NAME) built$(RESET)"
 
 all :		$(NAME)
