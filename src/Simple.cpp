@@ -1,7 +1,5 @@
 #include "../header/Simple.hpp"
 
-
-
 Simple::Simple()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -42,7 +40,7 @@ void	Simple::drawMenu()
 	SDL_RenderPresent(_renderer);
 
 	renderText(_renderer, "Simple Games", SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_HEIGHT);
-	renderText(_renderer, "Sequence", _button.x + _button.w / 2, _button.y + _button.h / 2);
+	renderCenteredText(_renderer, "Sequence", _button);
 }
 
 bool	Simple::isButtonPressed()

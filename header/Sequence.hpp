@@ -10,8 +10,9 @@
 
 #include <SDL2/SDL.h>
 
-#define TILE_SIZE 256
-#define BORDER_SIZE 32
+#define TILE_SIZE 240
+#define TILE_OFFSET 8
+#define BORDER_SIZE 16
 #define OFFSET BORDER_SIZE / 2
 
 
@@ -21,26 +22,14 @@ static SDL_Color	blue  = {50,  100, 200, 255};
 static SDL_Color	green = {50,  200, 100, 255};
 static SDL_Color	black = {40, 40, 40, 255};
 
-struct vector2
-{
-	int	x, y;
-};
-
-union rgb
-{
-	uint32_t	colour;
-	uint8_t		val[4];
-};
-
 class Sequence
 {
 private:
 	bool	_isRunning = true, _isWaiting = false;
 	uint8_t	_level = 1, _boardSize;
-	std::vector<vector2>		_sequence;
+	std::vector<SDL_Rect>	_tiles, _sequence;
 
-	SDL_Rect		_tile;
-	SDL_Event		_e;
+	SDL_Rect		_tile, _textRect;
 	SDL_Window*		_window;
 	SDL_Renderer*	_renderer;
 
@@ -52,10 +41,10 @@ public:
 	void	run();
 	void	drawBorders();
 	void	clearBoard();
-	void	drawTile(SDL_Color colour);
+	void	drawTile(SDL_Color colour, SDL_Rect& tile);
 
 	void	showSequence();
-	bool	makeMove(int& i, vector2 mouseInput);
+	bool	makeMove(int& i, SDL_Point mouseInput);
 
 	class	InitFailed : public std::exception
 	{
