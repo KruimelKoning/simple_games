@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Sequence.hpp"
 #include "Text.hpp"
+#include "Snake.hpp"
+#include "Sequence.hpp"
 
 #include <iostream>
 

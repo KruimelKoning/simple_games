@@ -15,13 +15,6 @@
 #define BORDER_SIZE 16
 #define OFFSET BORDER_SIZE / 2
 
-
-static SDL_Color	red   = {200, 100,  50, 255};
-static SDL_Color	grey  = {128, 128, 128, 255};
-static SDL_Color	blue  = {50,  100, 200, 255};
-static SDL_Color	green = {50,  200, 100, 255};
-static SDL_Color	black = {40, 40, 40, 255};
-
 class Sequence
 {
 private:

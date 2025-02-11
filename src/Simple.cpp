@@ -1,5 +1,11 @@
 #include "../header/Simple.hpp"
 
+static SDL_Color	red   = {200, 100,  50, 255};
+static SDL_Color	grey  = {128, 128, 128, 255};
+static SDL_Color	blue  = {50,  100, 200, 255};
+static SDL_Color	green = {50,  200, 100, 255};
+static SDL_Color	black = {40, 40, 40, 255};
+
 Simple::Simple()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -40,7 +46,7 @@ void	Simple::drawMenu()
 	SDL_RenderPresent(_renderer);
 
 	renderText(_renderer, "Simple Games", SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_HEIGHT);
-	renderCenteredText(_renderer, "Sequence", _button);
+	renderCenteredText(_renderer, "Snake", _button);
 }
 
 bool	Simple::isButtonPressed()
@@ -53,8 +59,8 @@ void	Simple::startGame()
 {
 	try
 	{
-		Sequence	sequence(_renderer, _window);
-		sequence.run();
+		Snake	Snake(_renderer, _window);
+		Snake.run();
 	}
 	catch(const std::exception& e)
 	{
