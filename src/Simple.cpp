@@ -21,8 +21,8 @@ Simple::Simple()
 		SDL_DestroyWindow(_window);
 		throw InitFailed();
 	}
-	_button = {	SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 2, 
-				BUTTON_WIDTH, BUTTON_HEIGHT};
+	_buttonSnake = {	BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT};
+	_buttonSequence = {	SCREEN_WIDTH - (BUTTON_WIDTH * 2) + BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT};
 	if (loadFontBM(_renderer) == false)
 		throw InitFailed();
 }
@@ -40,31 +40,35 @@ void	Simple::drawMenu()
 {
 	SDL_SetRenderDrawColor(_renderer, black.r, black.g, black.b, black.a);
 	SDL_RenderClear(_renderer);
+	
+	renderText(_renderer, "Simple Games", SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_HEIGHT);
 
 	SDL_SetRenderDrawColor(_renderer, grey.r, grey.g, grey.b, grey.a);
-	SDL_RenderFillRect(_renderer, &_button);
+	SDL_RenderFillRect(_renderer, &_buttonSnake);
 	SDL_RenderPresent(_renderer);
+	renderCenteredText(_renderer, "Snake", _buttonSnake);
 
-	renderText(_renderer, "Simple Games", SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_HEIGHT);
-	renderCenteredText(_renderer, "Snake", _button);
+	SDL_SetRenderDrawColor(_renderer, grey.r, grey.g, grey.b, grey.a);
+	SDL_RenderFillRect(_renderer, &_buttonSequence);
+	SDL_RenderPresent(_renderer);
+	renderCenteredText(_renderer, "Sequence", _buttonSequence);
 }
 
-bool	Simple::isButtonPressed()
+bool	Simple::isButtonPressed(SDL_Rect button)
 {
-	return	_e.button.x >= _button.x && _e.button.x <= _button.x + BUTTON_WIDTH
-			&& _e.button.y >= _button.y && _e.button.y <= _button.y + BUTTON_HEIGHT;
+	return	_e.button.x >= button.x && _e.button.x <= button.x + BUTTON_WIDTH
+			&& _e.button.y >= button.y && _e.button.y <= button.y + BUTTON_HEIGHT;
 }
 
 void	Simple::startGame()
 {
-	try
+	if (isButtonPressed(_buttonSnake) == true)
 	{
-		Snake	Snake(_renderer, _window);
-		Snake.run();
+		snake::run(_renderer, _window);
 	}
-	catch(const std::exception& e)
+	if (isButtonPressed(_buttonSequence) == true)
 	{
-		std::cerr << e.what() << '\n';
+		sequence::run(_renderer, _window);
 	}
 	SDL_SetWindowSize(_window, SCREEN_WIDTH, SCREEN_HEIGHT);
 	drawMenu();
@@ -82,7 +86,7 @@ void	Simple::run()
 				_isRunning = false;
 			if (_e.type == SDL_MOUSEBUTTONDOWN)
 			{
-				if (_e.button.button == SDL_BUTTON_LEFT && isButtonPressed() == true)
+				if (_e.button.button == SDL_BUTTON_LEFT)
 				{
 					startGame();
 				}

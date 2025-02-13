@@ -2,7 +2,7 @@ SRC = $(shell find ./src -iname "*.cpp")
 
 NAME = simple
 
-CPPFLAGS = -Wall -Wextra -std=c++20 #-fsanitize=address
+CPPFLAGS = -Wall -Wextra -Wimplicit-fallthrough -std=c++20 #-fsanitize=address
 
 BLUE =		\033[0;34m
 GREEN =		\033[0;32m

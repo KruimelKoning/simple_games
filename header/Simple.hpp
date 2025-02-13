@@ -8,7 +8,7 @@
 
 #include <SDL2/SDL.h>
 
-#define BUTTON_WIDTH  256
+#define BUTTON_WIDTH  324
 #define BUTTON_HEIGHT 128
 
 #define SCREEN_WIDTH  1260
@@ -19,7 +19,7 @@ class	Simple
 private:
 	bool	_isRunning = true;
 
-	SDL_Rect		_button;
+	SDL_Rect		_buttonSnake, _buttonSequence;
 	SDL_Event		_e;
 	SDL_Window*		_window;
 	SDL_Renderer*	_renderer;
@@ -31,7 +31,7 @@ public:
 	void	run();
 	void	drawMenu();
 	void	startGame();
-	bool	isButtonPressed();
+	bool	isButtonPressed(SDL_Rect button);
 
 	class	InitFailed : public std::exception
 	{

@@ -8,14 +8,18 @@
 
 #include <SDL2/SDL.h>
 
-#define STILE_SIZE 128
-#define BODY_SIZE 112
-#define APPLE_SIZE 96
-#define SOFFSET 8
-#define SNAKE_OFFSET 8 + SOFFSET
-#define APPLE_OFFSET 16 + SOFFSET
+namespace	snake
+{
+	#define TILE_SIZE 128
+	#define BODY_SIZE 112
+	#define APPLE_SIZE 96
+	#define SOFFSET 8
+	#define SNAKE_OFFSET 8 + SOFFSET
+	#define APPLE_OFFSET 16 + SOFFSET
+	#define BOARD_SIZE 8
 
-#define BOARD_SIZE 8
+	void	run(SDL_Renderer* renderer, SDL_Window* window);
+};
 
 enum Direction
 {
@@ -27,24 +31,13 @@ struct Cord
 	int	x, y;
 };
 
-class Snake
+struct	Snake
 {
-private:
-	bool				_isRunning = true, _buttonPressed = false;
-	Direction			_dir;
-	std::vector<Cord>	_body, _tiles;
+	Cord				apple;
+	bool				isRunning = true, buttonPressed = false;
+	Direction			dir;
+	std::vector<Cord>	body, tiles;
 
-	Cord			_apple;
-	SDL_Window*		_window;
-	SDL_Renderer*	_renderer;
-public:
-	Snake(SDL_Renderer* renderer, SDL_Window* window);
-	~Snake();
-
-	void	run();
-	void	move();
-	void	drawSnake();
-	void	drawApple();
-	bool	checkColision(Cord& next);
-	void	clearBoard();
+	SDL_Window*		window;
+	SDL_Renderer*	renderer;
 };

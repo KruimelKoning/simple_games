@@ -79,7 +79,7 @@ void	renderCenteredText(SDL_Renderer* renderer, const std::string& text, SDL_Rec
 		if (tokenMap.find(c) == tokenMap.end()) continue;
 
 		Token&		t = tokenMap[c];
-		SDL_Rect	destRect = { x + xoffset + t.xoffset, rect.y + t.yoffset, t.srcRect.w, t.srcRect.h };
+		SDL_Rect	destRect = { x + xoffset + t.xoffset, (rect.y + rect.h / 4) + t.yoffset, t.srcRect.w, t.srcRect.h };
 
 		SDL_RenderCopy(renderer, fontTexture, &t.srcRect, &destRect);
 		xoffset += t.xadvance;
