@@ -21,7 +21,8 @@ Simple::Simple()
 		SDL_DestroyWindow(_window);
 		throw InitFailed();
 	}
-	_buttonSnake = {	BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT};
+	_buttonSnake    = {	BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT};
+	_buttonTetris   = {	BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 4, BUTTON_WIDTH, BUTTON_HEIGHT};
 	_buttonSequence = {	SCREEN_WIDTH - (BUTTON_WIDTH * 2) + BUTTON_WIDTH / 2, SCREEN_HEIGHT - BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT};
 	if (loadFontBM(_renderer) == false)
 		throw InitFailed();
@@ -52,6 +53,11 @@ void	Simple::drawMenu()
 	SDL_RenderFillRect(_renderer, &_buttonSequence);
 	SDL_RenderPresent(_renderer);
 	renderCenteredText(_renderer, "Sequence", _buttonSequence);
+
+	SDL_SetRenderDrawColor(_renderer, grey.r, grey.g, grey.b, grey.a);
+	SDL_RenderFillRect(_renderer, &_buttonTetris);
+	SDL_RenderPresent(_renderer);
+	renderCenteredText(_renderer, "Tetris", _buttonTetris);
 }
 
 bool	Simple::isButtonPressed(SDL_Rect button)
@@ -69,6 +75,10 @@ void	Simple::startGame()
 	if (isButtonPressed(_buttonSequence) == true)
 	{
 		sequence::run(_renderer, _window);
+	}
+	if (isButtonPressed(_buttonTetris) == true)
+	{
+		tetris::run(_renderer, _window);
 	}
 	SDL_SetWindowSize(_window, SCREEN_WIDTH, SCREEN_HEIGHT);
 	drawMenu();

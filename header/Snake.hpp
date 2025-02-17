@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Text.hpp"
+#include "Tools.hpp"
 
 #include <vector>
 #include <chrono>
@@ -19,16 +20,6 @@ namespace	snake
 	#define BOARD_SIZE 8
 
 	void	run(SDL_Renderer* renderer, SDL_Window* window);
-};
-
-enum Direction
-{
-	LEFT, RIGHT, UP, DOWN
-};
-
-struct Cord
-{
-	int	x, y;
 };
 
 struct	Snake

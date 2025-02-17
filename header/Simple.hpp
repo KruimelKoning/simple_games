@@ -3,6 +3,7 @@
 #include "Text.hpp"
 #include "Snake.hpp"
 #include "Sequence.hpp"
+#include "Tetris.hpp"
 
 #include <iostream>
 
@@ -19,7 +20,7 @@ class	Simple
 private:
 	bool	_isRunning = true;
 
-	SDL_Rect		_buttonSnake, _buttonSequence;
+	SDL_Rect		_buttonSnake, _buttonSequence, _buttonTetris;
 	SDL_Event		_e;
 	SDL_Window*		_window;
 	SDL_Renderer*	_renderer;

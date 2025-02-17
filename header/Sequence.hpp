@@ -34,3 +34,37 @@ struct	Sequencee
 
 	SDL_Color	colors[9];
 };
+
+class Sequence
+{
+private:
+	bool	_isRunning = true, _isWaiting = false;
+	uint8_t	_level = 1, _boardSize;
+	std::vector<SDL_Rect>	_tiles, _sequence;
+
+	SDL_Rect		_tile, _textRect;
+	SDL_Window*		_window;
+	SDL_Renderer*	_renderer;
+
+	SDL_Color	_colors[9];
+public:
+	Sequence(SDL_Renderer* renderer, SDL_Window* window, uint8_t boardSize = 3);
+	~Sequence();
+
+	void	run();
+	void	drawBorders();
+	void	clearBoard();
+	void	drawTile(SDL_Color colour, SDL_Rect& tile);
+
+	void	showSequence();
+	bool	makeMove(int& i, SDL_Point mouseInput);
+
+	class	InitFailed : public std::exception
+	{
+		public:
+			const char*	what() const throw()
+			{
+				return "failed to initialize";
+			}
+	};
+};

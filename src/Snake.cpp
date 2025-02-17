@@ -29,7 +29,7 @@ void	drawApple(Snake& s)
 
 void	drawSnake(Snake& s)
 {
-	std::cout << "size: " << s.body.size() << std::endl;
+	// std::cout << "size: " << s.body.size() << std::endl;
 	Cord	&head = s.body.back(), &tail = s.body[0];
 
 
