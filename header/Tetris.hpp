@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Text.hpp"
 #include "Tools.hpp"
 
 #include <vector>
@@ -29,12 +30,20 @@ struct	Block
 	std::vector<Cord>	cords;
 };
 
+struct Tile
+{
+	bool		exists;
+	SDL_Color	colour;
+};
+
+
 struct	Tetris
 {
-	bool				board[BOARD_HEIGHT][BOARD_WIDTH]{};
-	bool				isRunning = true;
-	SDL_Color			colours[7];
-	std::vector<Cord>	current, blocks[7];
+	int			score = 0;
+	Tile		board[BOARD_HEIGHT][BOARD_WIDTH]{};
+	bool		isRunning = true;
+	Block		current, blocks[7];
+	SDL_Rect	text;
 
 	SDL_Window*		window;
 	SDL_Renderer*	renderer;

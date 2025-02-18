@@ -25,7 +25,7 @@ void	drawTile(const SDL_Color& colour, const SDL_Rect& tile, SDL_Renderer* rende
 
 void	showSequence(Sequencee& s)
 {
-	SDL_SetRenderDrawColor(s.renderer, grey.r, grey.g, grey.b, grey.a);
+	SDL_SetRenderDrawColor(s.renderer, black.r, black.g, black.b, black.a);
 	SDL_RenderFillRect(s.renderer, &s.textRect);
 	renderCenteredText(s.renderer, "Level: " + std::to_string(s.level), s.textRect);
 	SDL_RenderPresent(s.renderer);
