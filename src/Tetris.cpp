@@ -80,7 +80,7 @@ void	drawBlock(const std::vector<Cord>& previous, const Block& current, SDL_Rend
 		SDL_RenderFillRect(renderer, &rect);
 	}
 
-	SDL_SetRenderDrawColor(renderer, current.colour.r, current.colour.g, current.colour.b, current.colour.a);
+	SDL_SetRenderDrawColor(renderer, current.colour.r, current.colour.g, current.colour.b, current.colour.a); 
 	for (const Cord& cord : current.cords)
 	{
 		SDL_Rect	rect = { cord.x * (TILE_SIZE + BORDER_SIZE) + OFFSET, cord.y * (TILE_SIZE + BORDER_SIZE) + OFFSET, TILE_SIZE - OFFSET, TILE_SIZE - OFFSET };
@@ -96,6 +96,22 @@ void	drawTile(SDL_Rect tile, SDL_Color colour, SDL_Renderer* renderer)
 	SDL_RenderPresent(renderer);
 }
 
+void	drawNext(Tetris& t)
+{
+	Block	next = t.blocks[t.sequence[t.index]];
+
+	SDL_SetRenderDrawColor(t.renderer, black.r, black.g, black.b, black.a);
+	SDL_RenderFillRect(t.renderer, &t.nextRect);
+	renderCenteredText(t.renderer, "Next:", t.nextRect);
+	SDL_SetRenderDrawColor(t.renderer, next.colour.r, next.colour.g, next.colour.b, next.colour.a);
+	for (const Cord& c : next.cords)
+	{
+		SDL_Rect	rect = {(c.x + 9) * (TILE_SIZE + BORDER_SIZE) + OFFSET, (c.y + 6) * (TILE_SIZE + BORDER_SIZE) + OFFSET, TILE_SIZE - OFFSET, TILE_SIZE - OFFSET};
+		SDL_RenderFillRect(t.renderer, &rect);
+	}
+	SDL_RenderPresent(t.renderer);
+}
+
 void	initTetris(SDL_Renderer* renderer, SDL_Window* window, Tetris& t)
 {
 	srand(time(nullptr));
@@ -104,6 +120,10 @@ void	initTetris(SDL_Renderer* renderer, SDL_Window* window, Tetris& t)
 
 	SDL_SetWindowSize(t.window, (BOARD_WIDTH + 8) * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE, BOARD_HEIGHT * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE);
 	setupBlocks(t);
+
+	for (uint8_t i = 0; i < 7; i++)
+		t.sequence.push_back(i);
+	std::random_shuffle(t.sequence.begin(), t.sequence.end());
 
 	SDL_SetRenderDrawColor(t.renderer, black.r, black.g, black.b, black.a);
 	SDL_RenderClear(t.renderer);
@@ -117,12 +137,18 @@ void	initTetris(SDL_Renderer* renderer, SDL_Window* window, Tetris& t)
 		}
 	}
 
-	t.text = {BOARD_WIDTH * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE, TILE_SIZE + BORDER_SIZE, 8 * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE, 256};
-	drawTile(t.text, black, t.renderer);
-	renderCenteredText(t.renderer, "Score: " + std::to_string(t.score), t.text);
+	t.textRect = {BOARD_WIDTH * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE, TILE_SIZE + BORDER_SIZE, 8 * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE, 256};
+	drawTile(t.textRect, black, t.renderer);
+	std::string	str = "Score: " + std::to_string(t.score) + " Level: " + std::to_string(t.level);
+	renderCenteredText(t.renderer, str, t.textRect);
 
-	t.current = t.blocks[rand() % 7];
+	
+	t.current = t.blocks[t.sequence[t.index]];
+	t.index++;
 	drawBlock(t.current.cords, t.current, t.renderer);
+
+	t.nextRect = {BOARD_WIDTH * (TILE_SIZE + BORDER_SIZE) + BORDER_SIZE, 4 * (TILE_SIZE + BORDER_SIZE), 8 * (TILE_SIZE + BORDER_SIZE), 4 * (TILE_SIZE + BORDER_SIZE)};
+	drawNext(t);
 	SDL_RenderPresent(renderer);
 }
 
@@ -141,7 +167,6 @@ void	handleTetris(Tetris& t, int y)
 			}
 		}
 	}
-	std::cout << "Yoo 1\n";
 	SDL_RenderPresent(t.renderer);
 }
 
@@ -167,8 +192,11 @@ void	updateBoard(Tetris& t)
 		}
 	}
 	t.score += (100 * lines * 1.5);
-	drawTile(t.text, black, t.renderer);
-	renderCenteredText(t.renderer, "Score: " + std::to_string(t.score), t.text);
+	if (t.score >= 1000 * t.level)
+		t.level++;
+	drawTile(t.textRect, black, t.renderer);
+	std::string	str = "Score: " + std::to_string(t.score) + " Level: " + std::to_string(t.level);
+	renderCenteredText(t.renderer, str, t.textRect);
 }
 
 bool	checkColision(Tetris& t)
@@ -184,7 +212,7 @@ bool	checkColision(Tetris& t)
 
 void	rotateBlock(Block& block)
 {
-	Cord	pivot = block.cords[0];
+	Cord	pivot = block.cords[1];
 
 	for (Cord& c : block.cords)
 	{
@@ -194,6 +222,24 @@ void	rotateBlock(Block& block)
 		c.x = pivot.x + -relY;
 		c.y = pivot.y + relX;
 	}
+	for (Cord& c : block.cords)
+	{
+		if (c.x >= BOARD_WIDTH)
+		{
+			for (Cord& c : block.cords) { c.x--; };
+		}
+		if (c.x <= 0)
+		{
+			for (Cord& c : block.cords) { c.x++; };
+		}
+	}
+}
+
+void	holdBlock(Tetris& t)
+{
+	if (t.isHolding == true)
+		return ;
+	t.hold = t.current;
 }
 
 void	moveBlock(Direction dir, Tetris& t)
@@ -203,15 +249,32 @@ void	moveBlock(Direction dir, Tetris& t)
 	{
 		case UP:    rotateBlock(next);                           break;
 		case DOWN:  for (Cord& cord : next.cords) { cord.y++; }; break;
-		case LEFT:  for (Cord& cord : next.cords) { cord.x--; }; break;
-		case RIGHT: for (Cord& cord : next.cords) { cord.x++; }; break;
+		case LEFT:
+			for (Cord& c : next.cords)
+			{
+				c.x--;
+				if (c.x < 0 || t.board[c.y][c.x].exists == true) return ;
+			}; break;
+		case RIGHT:
+		for (Cord& c : next.cords)
+		{
+			c.x++;
+			if (c.x >= BOARD_WIDTH || t.board[c.y][c.x].exists == true) return ;
+		}; break;
 	}
 	drawBlock(t.current.cords, next, t.renderer);
 	t.current = next;
 	if (checkColision(t) == true)
 	{
-		t.current = t.blocks[rand() % 7];
+		t.current = t.blocks[t.sequence[t.index]];
 		drawBlock(t.current.cords, t.current, t.renderer);
+		t.index++;
+		if (t.index == 7)
+		{
+			std::random_shuffle(t.sequence.begin(), t.sequence.end());
+			t.index = 0;
+		}
+		drawNext(t);
 	}
 }
 
@@ -228,7 +291,7 @@ void	tetris::run(SDL_Renderer* renderer, SDL_Window* window)
 	{
 		auto	now = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = now - start;
-		if (elapsed.count() >= 0.8)
+		if (elapsed.count() >= (0.8 - 0.05 * t.level))
 		{
 			moveBlock(DOWN, t);
 			start = now;
@@ -242,7 +305,8 @@ void	tetris::run(SDL_Renderer* renderer, SDL_Window* window)
 			{
 				switch (e.key.keysym.sym)
 				{
-					case SDLK_UP:    moveBlock(UP,  t); break;
+					case SDLK_w:     holdBlock(t);        break;
+					case SDLK_UP:    moveBlock(UP,    t); break;
 					case SDLK_DOWN:  moveBlock(DOWN,  t); break;
 					case SDLK_LEFT:  moveBlock(LEFT,  t); break;
 					case SDLK_RIGHT: moveBlock(RIGHT, t); break;

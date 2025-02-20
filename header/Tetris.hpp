@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <chrono>
+#include <random>
 
 #include <SDL2/SDL.h>
 
@@ -39,11 +40,13 @@ struct Tile
 
 struct	Tetris
 {
-	int			score = 0;
-	Tile		board[BOARD_HEIGHT][BOARD_WIDTH]{};
-	bool		isRunning = true;
-	Block		current, blocks[7];
-	SDL_Rect	text;
+	int						score = 0, level = 0;
+	Tile					board[BOARD_HEIGHT][BOARD_WIDTH]{};
+	bool					isHolding = false, isRunning = true;
+	Block					current, hold, blocks[7];
+	uint8_t					index = 0 ;
+	SDL_Rect				textRect, holdRect, nextRect;
+	std::vector<uint8_t>	sequence;
 
 	SDL_Window*		window;
 	SDL_Renderer*	renderer;
